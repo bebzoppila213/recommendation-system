@@ -1,0 +1,68 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  email    String @unique
+  name     String
+  password String
+  img String?
+  firstName String?
+  lastName String?
+  films Film[]
+}
+
+model Film {
+  id Int    @id @default(autoincrement())
+  homepage String? @default("")
+  budget String
+  imdb_id String
+  popularity Float
+  poster_path String @db.Text
+  production_companies String @db.Text
+  production_countries String @db.Text
+  release_date DateTime
+  revenue Float
+  runtime Float? @default(0)
+  status String? @default("")
+  vote_average Float
+  vote_count Float
+  ru_title String
+  ru_overview String? @db.Text
+  genres Genres[]
+
+  users User[]
+
+  @@fulltext([ru_title])
+}
+
+model Genres{
+  id Int    @id @default(autoincrement())
+  name String
+  films Film[]
+}
+
+
+// model FilmsOnGenres{
+//   film       Film     @relation(fields: [filmId], references: [id])
+//   filmId     Int // relation scalar field (used in the `@relation` attribute above)
+//   genres   Genres @relation(fields: [genresId], references: [id])
+//   genresId Int // relation scalar field (used in the `@relation` attribute above)
+//   @@id([filmId, genresId])
+// }
+
+model FilmCluster {
+  filmId Int @unique
+  clasterId Int
+
+}
